@@ -1,5 +1,6 @@
 package xinyi.com.select.more;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -10,10 +11,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import xinyi.com.select.R;
 import xinyi.com.select.more.adapter.MoreSelectAdapter;
 import xinyi.com.select.more.adapter.RecycleItemTouchHelper;
 import xinyi.com.select.more.bean.MoreItem;
@@ -21,32 +23,33 @@ import xinyi.com.select.more.recycleview.RecyclerViewHelper;
 import xinyi.com.select.more.recycleview.divider.HorizontalDividerItemDecoration;
 import xinyi.com.select.more.recycleview.divider.VerticalDividerItemDecoration;
 
-/** SelectActivity<MainItem1>.class
+/**
+ * SelectActivity<MainItem1>.class
  * 选择更多
  */
-public abstract class SelectMoreActivity <T extends MoreItem> extends AppCompatActivity implements  IMoreSelect<T>{
+public abstract class SelectMoreActivity extends AppCompatActivity implements IMoreSelect {
 
     private ImageView mBack;//
     private TextView mTextView;//编辑
     private RecyclerView selectRecyclerView;//选中的recycleView
     private RecyclerView allRecycleView;//所以选择的recycleView
 
-    private List<T>selectDataList=new ArrayList<>();//选中的data
-    private List<T>allSelectDataList=new ArrayList<>();//所以的item的data
+    private List<MoreItem> selectDataList = new ArrayList<>();//选中的data
+    private List<MoreItem> allSelectDataList = new ArrayList<>();//所以的item的data
 
     private MoreSelectAdapter selectAdapter;//选中的item
     private MoreSelectAdapter allSelectAdapter;//所有的adapter
     private RecycleItemTouchHelper itemTouch;
-    private  GridLayoutManager layoutManager;
+    private GridLayoutManager layoutManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_more);
-        mBack=findViewById(R.id.mBack);
-        mTextView=findViewById(R.id.mTextView);
-        selectRecyclerView=findViewById(R.id.selectRecyclerView);
-        allRecycleView=findViewById(R.id.allRecycleView);
+        mBack = findViewById(R.id.mBack);
+        mTextView = findViewById(R.id.mTextView);
+        selectRecyclerView = findViewById(R.id.selectRecyclerView);
+        allRecycleView = findViewById(R.id.allRecycleView);
         mBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,23 +61,32 @@ public abstract class SelectMoreActivity <T extends MoreItem> extends AppCompatA
     }
 
     //编辑按钮
-    protected  void initText(){
+    protected void initText() {
         mTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean bl=false;
-                if (mTextView.getText().equals("完成")){
+                boolean bl = false;
+                if (mTextView.getText().equals("完成")) {
                     mTextView.setText("编辑");
-                    itemTouch.isLongPress=false;
-                    bl=false;
+                    itemTouch.isLongPress = false;
+                    bl = false;
                     //保存所有item的状态，保存当前的select的顺序
-                    saveChangedData(allSelectDataList,selectDataList);
-                }else {
-                    itemTouch.isLongPress=true;
+
+                    String s = JSONObject.toJSONString(allSelectDataList);
+                    //保存当前选中的应用的顺序
+                    List<String> orders = new ArrayList<>();
+                    for (MoreItem m : selectDataList
+                            ) {
+                        orders.add("" + m.getPostion());
+                    }
+                    String order = JSONObject.toJSONString(orders);
+                    saveDataBySp(s, order);
+                } else {
+                    itemTouch.isLongPress = true;
                     mTextView.setText("完成");
-                    bl=true;
+                    bl = true;
                 }
-                for (T t:allSelectDataList
+                for (MoreItem t : allSelectDataList
                         ) {
                     t.setShow(bl);
                 }
@@ -84,12 +96,12 @@ public abstract class SelectMoreActivity <T extends MoreItem> extends AppCompatA
         });
     }
 
-    public void initRecycleView(){
+    public void initRecycleView() {
         allSelectDataList.clear();
         allSelectDataList.addAll(getList());
-        for (T t:allSelectDataList
-             ) {
-            if (t.isSelect()){
+        for (MoreItem t : allSelectDataList
+                ) {
+            if (t.isSelect()) {
                 t.setUiType(1);
                 selectDataList.add(t);
             }
@@ -103,7 +115,7 @@ public abstract class SelectMoreActivity <T extends MoreItem> extends AppCompatA
                 if (mTextView.getText().equals("编辑"))
                     mTextView.performClick();
                 else
-                    return  false;
+                    return false;
                 return false;
             }
         });
@@ -117,8 +129,8 @@ public abstract class SelectMoreActivity <T extends MoreItem> extends AppCompatA
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                T t= allSelectDataList.get(position);
-                if (t.getUiType()==0) {
+                MoreItem t = allSelectDataList.get(position);
+                if (t.getUiType() == 0) {
                     return layoutManager.getSpanCount();
                 } else {
                     return 1;
@@ -130,17 +142,14 @@ public abstract class SelectMoreActivity <T extends MoreItem> extends AppCompatA
         itemTouch = new RecycleItemTouchHelper(selectAdapter);
         ItemTouchHelper helper = new ItemTouchHelper(itemTouch);
         helper.attachToRecyclerView(selectRecyclerView);
-
-
     }
 
 
-
     //点击小图标，更新ui
-    public  void  updateSelectApp(T t) {
-        if (!t.isSelect()){
+    public void updateSelectApp(MoreItem t) {
+        if (!t.isSelect()) {
             selectDataList.add(t);
-        }else {
+        } else {
             selectDataList.remove(t);
         }
         t.setSelect(!t.isSelect());
@@ -148,4 +157,12 @@ public abstract class SelectMoreActivity <T extends MoreItem> extends AppCompatA
         selectAdapter.notifyDataSetChanged();
     }
 
+
+    public void saveDataBySp(String content, String order) {
+        SharedPreferences sp = getSharedPreferences("selectMore", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("more", content);//改变之后的状态保存起来
+        editor.putString("order", order);//选择的item的顺序排列
+        editor.commit();
+    }
 }

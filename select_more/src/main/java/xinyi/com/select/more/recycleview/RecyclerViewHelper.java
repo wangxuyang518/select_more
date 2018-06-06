@@ -8,10 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
-import xinyi.com.select.R;
+import xinyi.com.select.more.R;
 import xinyi.com.select.more.recycleview.divider.HorizontalDividerItemDecoration;
 import xinyi.com.select.more.recycleview.divider.VerticalDividerItemDecoration;
-
 
 
 /**

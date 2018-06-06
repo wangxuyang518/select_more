@@ -1,6 +1,7 @@
 package xinyi.com.select.more.bean;
 
-import xinyi.com.select.R;
+
+import xinyi.com.select.more.R;
 
 /**
  * 选择更多  item的属性基类

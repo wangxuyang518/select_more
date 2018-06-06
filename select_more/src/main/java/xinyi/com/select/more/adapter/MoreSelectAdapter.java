@@ -7,24 +7,27 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+
 import java.util.List;
 
-import xinyi.com.select.R;
+import xinyi.com.select.more.R;
 import xinyi.com.select.more.SelectMoreActivity;
 import xinyi.com.select.more.bean.MoreItem;
 
 /**
  * 更多选项
  */
-public class MoreSelectAdapter<T extends MoreItem> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class MoreSelectAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<T> dataSource;
+    private List<MoreItem> dataSource;
     public static final int TYPE_UI_TITLE = 0;
     public static final int TYPE_UI_ITEM = 1;
 
     private OnItemLongClickListener mOnItemLongClickListener;
     private OnItemClickListener mOnItemClickListener;
-    public MoreSelectAdapter(List<T> dataSource) {
+    public MoreSelectAdapter(List<MoreItem> dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -44,7 +47,7 @@ public class MoreSelectAdapter<T extends MoreItem> extends RecyclerView.Adapter<
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder,final int position) {
-        final T t = dataSource.get(position);
+        final MoreItem t = dataSource.get(position);
         if (getItemViewType(position) == 0) {
             MoreSelectTitleHolder h = (MoreSelectTitleHolder) holder;
             h.titleView.setText(t.getName());
@@ -55,6 +58,14 @@ public class MoreSelectAdapter<T extends MoreItem> extends RecyclerView.Adapter<
             p.setBackgroundColor(t.isShow() ? Color.parseColor("#F5F6F5") : Color.parseColor("#ffffff"));
             if (t.isShow()) {
                 h.tagImageView.setImageResource(t.isSelect() ? R.mipmap.item_del : R.mipmap.item_add);
+            }
+            if (t.getIconUrl()==null||t.getIconUrl().equals("")){
+                h.iconImageView.setImageResource(R.mipmap.ic_launcher);
+            }else {
+                Glide.with(h.itemView.getContext())
+                        .load(t.getIconUrl())
+                        .transition(DrawableTransitionOptions.withCrossFade())
+                        .into(h.iconImageView);
             }
             h.name.setText(t.getName());
             h.tagImageView.setOnClickListener(new View.OnClickListener() {
@@ -83,7 +94,7 @@ public class MoreSelectAdapter<T extends MoreItem> extends RecyclerView.Adapter<
 
     @Override
     public int getItemViewType(int position) {
-        T t = dataSource.get(position);
+        MoreItem t = dataSource.get(position);
         if (t.getUiType() == 0) {
             return 0;
         } else {
@@ -133,12 +144,12 @@ public class MoreSelectAdapter<T extends MoreItem> extends RecyclerView.Adapter<
         boolean onItemLongClick(MoreSelectAdapter adapter, View view, int position);
     }
 
-    public MoreSelectAdapter<T> setmOnItemLongClickListener(OnItemLongClickListener mOnItemLongClickListener) {
+    public MoreSelectAdapter  setmOnItemLongClickListener(OnItemLongClickListener mOnItemLongClickListener) {
         this.mOnItemLongClickListener = mOnItemLongClickListener;
         return this;
     }
 
-    public MoreSelectAdapter<T> setmOnItemClickListener(OnItemClickListener mOnItemClickListener) {
+    public MoreSelectAdapter  setmOnItemClickListener(OnItemClickListener mOnItemClickListener) {
         this.mOnItemClickListener = mOnItemClickListener;
         return this;
     }
