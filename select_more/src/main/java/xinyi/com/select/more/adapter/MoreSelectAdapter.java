@@ -54,6 +54,7 @@ public class MoreSelectAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHo
         } else {
             MoreSelectItemHolder h = (MoreSelectItemHolder) holder;
             final View p= (View) h.iconImageView.getParent();
+            h.name.setText(t.getName());
             h.tagImageView.setVisibility(t.isShow() ? View.VISIBLE : View.INVISIBLE);
             p.setBackgroundColor(t.isShow() ? Color.parseColor("#F5F6F5") : Color.parseColor("#ffffff"));
             if (t.isShow()) {
@@ -67,7 +68,7 @@ public class MoreSelectAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHo
                         .transition(DrawableTransitionOptions.withCrossFade())
                         .into(h.iconImageView);
             }
-            h.name.setText(t.getName());
+
             h.tagImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -2,37 +2,43 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="#F5F6F5">
+
 
     <ImageView
         android:id="@+id/mImageView"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
 
-        android:src="@mipmap/ic_launcher"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:src="@mipmap/ic_launcher" />
+
 
     <TextView
+
         android:id="@+id/mTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:paddingBottom="4dp"
-        android:text="蚂蚁庄园"
+        android:layout_centerHorizontal="true"
+
         android:textColor="#555555"
-        android:textSize="14dp"
+        android:textSize="13sp"
+        android:paddingBottom="4dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/mImageView" />
+        app:layout_constraintTop_toBottomOf="@id/mImageView"
+        />
 
     <ImageView
         android:id="@+id/tagImage"
         android:layout_width="18dp"
         android:layout_height="18dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:layout_alignParentRight="true"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@mipmap/ic_launcher"
+        />
 </android.support.constraint.ConstraintLayout>
