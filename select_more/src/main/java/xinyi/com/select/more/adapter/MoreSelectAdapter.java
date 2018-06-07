@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
@@ -63,9 +64,12 @@ public class MoreSelectAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHo
             if (t.getIconUrl()==null||t.getIconUrl().equals("")){
                 h.iconImageView.setImageResource(R.mipmap.ic_launcher);
             }else {
+                RequestOptions options = new RequestOptions()
+                        .placeholder(R.mipmap.ic_launcher);
                 Glide.with(h.itemView.getContext())
                         .load(t.getIconUrl())
                         .transition(DrawableTransitionOptions.withCrossFade())
+                        .apply(options)
                         .into(h.iconImageView);
             }
 

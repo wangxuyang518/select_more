@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.ArrayList;
@@ -71,7 +72,10 @@ public abstract class SelectMoreActivity extends AppCompatActivity implements IM
                     itemTouch.isLongPress = false;
                     bl = false;
                     //保存所有item的状态，保存当前的select的顺序
-
+                    for (MoreItem t : allSelectDataList
+                            ) {
+                        t.setShow(bl);
+                    }
                     String s = JSONObject.toJSONString(allSelectDataList);
                     //保存当前选中的应用的顺序
                     List<String> orders = new ArrayList<>();
@@ -85,10 +89,10 @@ public abstract class SelectMoreActivity extends AppCompatActivity implements IM
                     itemTouch.isLongPress = true;
                     mTextView.setText("完成");
                     bl = true;
-                }
-                for (MoreItem t : allSelectDataList
-                        ) {
-                    t.setShow(bl);
+                    for (MoreItem t : allSelectDataList
+                            ) {
+                        t.setShow(bl);
+                    }
                 }
                 selectAdapter.notifyDataSetChanged();
                 allSelectAdapter.notifyDataSetChanged();
@@ -98,17 +102,23 @@ public abstract class SelectMoreActivity extends AppCompatActivity implements IM
 
     public void initRecycleView() {
         allSelectDataList.clear();
+        selectDataList.clear();
         allSelectDataList.addAll(getList());
-        for (MoreItem t : allSelectDataList
-                ) {
-            if (t.isSelect()) {
+
+        //根据顺序将allSelectDataList 已经选择好的item.添加进selectDataList
+        String order = getDataFromSp("order");
+        if (order != null && !order.equals("")) {
+            List<String> orders = JSONArray.parseArray(order, String.class);
+            for (String s : orders
+                    ) {
+                MoreItem t = allSelectDataList.get(Integer.valueOf(s));
                 t.setUiType(1);
+                t.setSelect(true);
                 selectDataList.add(t);
             }
         }
         selectAdapter = new MoreSelectAdapter(selectDataList);
         allSelectAdapter = new MoreSelectAdapter(allSelectDataList);
-
         selectAdapter.setmOnItemLongClickListener(new MoreSelectAdapter.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(MoreSelectAdapter adapter, View view, int position) {
@@ -164,5 +174,10 @@ public abstract class SelectMoreActivity extends AppCompatActivity implements IM
         editor.putString("more", content);//改变之后的状态保存起来
         editor.putString("order", order);//选择的item的顺序排列
         editor.commit();
+    }
+
+    public String getDataFromSp(String key) {
+        SharedPreferences sp = getSharedPreferences("selectMore", MODE_PRIVATE);
+        return sp.getString(key, "");
     }
 }

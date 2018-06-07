@@ -7,14 +7,14 @@ import xinyi.com.select.more.R;
  * 选择更多  item的属性基类
  */
 public class MoreItem {
-
     private String name="";//item下面的名称
-    private String iconUrl="";//item的图片的url
+    private String iconUrl="";//item的图片的url。url不存在或者为null 就会加载iconLocal
     private int  iconLocal= R.mipmap.ic_launcher;//item 本地icon
     private boolean isShow=false;//是否显示编辑状态的ui
     private boolean isSelect=false;//item 是否被选中
     private int uiType=1;//0表示item上面的标题布局   1表示item的图片加文字布局
-    private int postion;
+    private int postion;//用于保存选择的item的顺序
+
     public String getName() {
         return name;
     }
