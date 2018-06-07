@@ -71,6 +71,7 @@ public abstract class SelectMoreActivity extends AppCompatActivity implements IM
                     mTextView.setText("编辑");
                     itemTouch.isLongPress = false;
                     bl = false;
+                    
                     //保存所有item的状态，保存当前的select的顺序
                     for (MoreItem t : allSelectDataList
                             ) {
