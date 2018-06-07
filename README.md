@@ -54,7 +54,7 @@ public class MoreActivity extends SelectMoreActivity {
 **注意：**
 setSelect 表示此item 被选中
 
-setPostion 给item设置 一个position，用于后面保存选择的item的位置信息
+setPostion 给item设置 一个position，用于后面保存选择的item的顺序信息
 
 setUiType 区分item的layout布局，0 表示只有一个title布局，1表示图片+文字+右上角小图标
 
