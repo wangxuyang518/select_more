@@ -53,9 +53,13 @@ public class MoreActivity extends SelectMoreActivity {
 ```
 **注意：**
 setSelect 表示此item 被选中
+
 setPostion 给item设置 一个position，用于后面保存选择的item的位置信息
+
 setUiType 区分item的layout布局，0 表示只有一个title布局，1表示图片+文字+右上角小图标
+
 setIconLocal 默认图片
+
 setIconUrl 网络小图标
 
 
@@ -73,3 +77,5 @@ setIconUrl 网络小图标
 ```
 所以：
 得到所有的item的状态可以通过 sp.getString("more")之后强转成List<MoreItem>即可。
+    
+getList 方法返回一个List即可，假如这个List事先设置了选中的项，需要这些项的postion依次放进一个List中，然后保存在Sp中，key为“order”
